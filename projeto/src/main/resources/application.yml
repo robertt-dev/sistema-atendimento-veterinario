@@ -3,8 +3,20 @@ spring:
     url: jdbc:postgresql://localhost:5432/projeto_veterinario
     username: postgres
     password: 123456
+    driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
     properties:
-      dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+
+server:
+  port: 8080
