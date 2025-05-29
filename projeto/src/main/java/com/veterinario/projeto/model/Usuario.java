@@ -2,36 +2,35 @@ package com.veterinario.projeto.model;
 
 import com.veterinario.projeto.model.Enum.Patente;
 import jakarta.persistence.*;
+import lombok.*;
 
-import java.util.UUID;
+/**
+ * Representa um usuário do sistema (pode ser militar ou civil).
+ */
 @Entity
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID id;
 
-    @Column(name = "nome")
+    @Column(nullable = false)
     private String nome;
 
-    @Column(name = "email")
+    @Column(nullable = false, unique = true, length = 255)
     private String email;
 
-    @Column(name = "senha")
+    @Column(nullable = false)
     private String senha;
 
     @Enumerated(EnumType.STRING)
-    private Patente patente;
+    @Column(nullable = true)
+    private Patente patente; // Pode ser null (usuário civil)
 }
-
-
-
-/* Usuário do sistema
-CREATE TABLE usuario (
-        id SERIAL PRIMARY KEY,
-        nome TEXT NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        senha TEXT NOT NULL,
-   tipo_usuario TEXT CHECK (tipo_usuario IN ('admin', 'vet', 'recep')) NOT NULL,
-   post_grad_id INT REFERENCES posto_graduacao(id)
-);\*
