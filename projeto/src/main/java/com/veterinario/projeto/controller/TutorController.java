@@ -41,7 +41,7 @@ public class TutorController {
     /**
      * Busca tutores por nome (parcial e sem case-sensitive).
      */
-    @GetMapping("/nome/{nome}")
+   /* @GetMapping("/nome/{nome}")
     public ResponseEntity<List<Tutor>> buscarPorNome(@PathVariable String nome) {
         List<Tutor> tutores = tutorService.buscarTutoresPorNome(nome);
         return ResponseEntity.ok(tutores);
