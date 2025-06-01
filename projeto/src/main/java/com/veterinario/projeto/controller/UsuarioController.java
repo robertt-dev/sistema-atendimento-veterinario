@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Endpoints para manipular usuários.
@@ -36,11 +35,12 @@ public class UsuarioController {
      * Buscar usuário por ID.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable UUID id) {
-        Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
-        return usuario.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Long id) {
+    Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
+    return usuario.map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
+
 
     /**
      * Buscar usuário por email.
