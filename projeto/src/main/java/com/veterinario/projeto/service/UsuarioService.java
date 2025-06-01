@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
+
 
 /**
  * Serviço para lidar com a lógica de usuários.
@@ -30,9 +30,10 @@ public class UsuarioService {
     /**
      * Busca usuário pelo ID.
      */
-    public Optional<Usuario> buscarUsuarioPorId(UUID id) {
-        return usuarioRepository.findById(id);
+    public Optional<Usuario> buscarUsuarioPorId(Long id) {
+    return usuarioRepository.findById(id);
     }
+
 
     /**
      * Busca usuário pelo email.

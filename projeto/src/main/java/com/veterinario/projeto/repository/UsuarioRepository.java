@@ -8,7 +8,8 @@ import java.util.Optional;
 /**
  * Repositório para acesso aos dados da entidade Usuario.
  */
-public interface UsuarioRepository extends JpaRepository<Usuario, java.util.UUID> {
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+
 
     // Buscar por e-mail (útil para login)
     Optional<Usuario> findByEmail(String email);
