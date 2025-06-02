@@ -5,5 +5,5 @@ package com.veterinario.projeto.model.Enum;
  */
 public enum OrigemAnimal {
     INTERNO,
-    EXTERNO
+    EXTERNO,
 }
