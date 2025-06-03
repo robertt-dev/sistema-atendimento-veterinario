@@ -1,6 +1,5 @@
 package com.veterinario.projeto.controller;
 
-import com.veterinario.projeto.model.Animal;
 import com.veterinario.projeto.model.Tutor;
 import com.veterinario.projeto.service.TutorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Endpoints REST para manipulação de tutores e seus animais.
- */
 @RestController
 @RequestMapping("/tutores")
 public class TutorController {
@@ -20,50 +16,43 @@ public class TutorController {
     private TutorService tutorService;
 
     /**
+     * Lista todos os tutores cadastrados.
+     */
+    @GetMapping
+    public ResponseEntity<List<Tutor>> listarTutores() {
+        return ResponseEntity.ok(tutorService.listarTutores());
+    }
+
+    /**
+     * Busca um tutor pelo ID.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Tutor> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(tutorService.buscarPorId(id));
+    }
+
+    /**
      * Cadastra um novo tutor.
      */
     @PostMapping
-    public ResponseEntity<Tutor> cadastrarTutor(@RequestBody Tutor tutor) {
-        Tutor novoTutor = tutorService.cadastrarTutor(tutor);
-        return ResponseEntity.ok(novoTutor);
+    public ResponseEntity<Tutor> salvarTutor(@RequestBody Tutor tutor) {
+        return ResponseEntity.ok(tutorService.salvarTutor(tutor));
     }
 
     /**
-     * Busca tutor por CPF.
+     * Atualiza um tutor existente pelo ID.
      */
-    @GetMapping("/cpf/{cpf}")
-    public ResponseEntity<Tutor> buscarPorCpf(@PathVariable String cpf) {
-        return tutorService.buscarTutorPorCpf(cpf)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @PutMapping("/{id}")
+    public ResponseEntity<Tutor> atualizarTutor(@PathVariable Long id, @RequestBody Tutor tutor) {
+        return ResponseEntity.ok(tutorService.atualizarTutor(id, tutor));
     }
 
     /**
-     * Busca tutores por nome (parcial e sem case-sensitive).
+     * Deleta um tutor pelo ID. Os animais associados são removidos em cascata.
      */
-   /* @GetMapping("/nome/{nome}")
-    public ResponseEntity<List<Tutor>> buscarPorNome(@PathVariable String nome) {
-        List<Tutor> tutores = tutorService.buscarTutoresPorNome(nome);
-        return ResponseEntity.ok(tutores);
-    }
-
-    /**
-     * Lista todos os animais de um tutor.
-     */
-    @GetMapping("/{tutorId}/animais")
-    public ResponseEntity<List<Animal>> listarAnimaisDoTutor(@PathVariable Long tutorId) {
-        List<Animal> animais = tutorService.listarAnimaisDoTutor(tutorId);
-        return ResponseEntity.ok(animais);
-    }
-
-    /**
-     * Cadastra um novo animal vinculado a um tutor.
-     */
-    @PostMapping("/{tutorId}/animais")
-    public ResponseEntity<Animal> cadastrarAnimal(@PathVariable Long tutorId, @RequestBody Animal animal) {
-        Animal novoAnimal = tutorService.cadastrarAnimal(tutorId, animal);
-        return ResponseEntity.ok(novoAnimal);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarTutor(@PathVariable Long id) {
+        tutorService.deletarTutor(id);
+        return ResponseEntity.noContent().build();
     }
 }
-
-

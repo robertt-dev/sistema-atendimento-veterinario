@@ -2,6 +2,7 @@ package com.veterinario.projeto.model;
 
 import com.veterinario.projeto.model.Enum.OrigemAnimal;
 import com.veterinario.projeto.model.Enum.TemperamentoAnimal;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -54,5 +55,6 @@ public class Animal {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tutor_id", nullable = false)
+    @JsonBackReference
     private Tutor tutor;
 }

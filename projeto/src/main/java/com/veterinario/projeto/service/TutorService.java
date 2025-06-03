@@ -1,59 +1,62 @@
 package com.veterinario.projeto.service;
 
-import com.veterinario.projeto.model.Animal;
 import com.veterinario.projeto.model.Tutor;
-import com.veterinario.projeto.repository.AnimalRepository;
 import com.veterinario.projeto.repository.TutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
-/**
- * Lógica de negócio para tutores e seus animais.
- */
 @Service
 public class TutorService {
 
     @Autowired
     private TutorRepository tutorRepository;
 
-    @Autowired
-    private AnimalRepository animalRepository;
+    /**
+     * Retorna todos os tutores cadastrados.
+     */
+    public List<Tutor> listarTutores() {
+        return tutorRepository.findAll();
+    }
 
     /**
-     * Cadastra um novo tutor no sistema.
+     * Retorna um tutor pelo ID.
      */
-    public Tutor cadastrarTutor(Tutor tutor) {
+    public Tutor buscarPorId(Long id) {
+        return tutorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tutor não encontrado com o ID: " + id));
+    }
+
+    /**
+     * Cadastra um novo tutor.
+     */
+    public Tutor salvarTutor(Tutor tutor) {
         return tutorRepository.save(tutor);
     }
 
     /**
-     * Busca um tutor pelo CPF.
+     * Atualiza as informações de um tutor existente pelo ID.
      */
-    public Optional<Tutor> buscarTutorPorCpf(String cpf) {
-        return tutorRepository.findByCpf(cpf);
+    public Tutor atualizarTutor(Long id, Tutor tutor) {
+        Tutor tutorExistente = tutorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tutor não encontrado com o ID: " + id));
+
+        tutorExistente.setNome(tutor.getNome());
+        tutorExistente.setCpf(tutor.getCpf());
+        tutorExistente.setTelefone(tutor.getTelefone());
+        tutorExistente.setEmail(tutor.getEmail());
+        tutorExistente.setPostGrad(tutor.getPostGrad());
+
+        return tutorRepository.save(tutorExistente);
     }
 
     /**
-     * Lista todos os animais de um tutor.
+     * Remove um tutor pelo ID. Os animais associados são removidos automaticamente em cascata.
      */
-    public List<Animal> listarAnimaisDoTutor(Long tutorId) {
-        Tutor tutor = tutorRepository.findById(tutorId)
-                .orElseThrow(() -> new RuntimeException("Tutor não encontrado"));
-
-        return animalRepository.findByTutor(tutor);
-    }
-
-    /**
-     * Cadastra um novo animal vinculado a um tutor.
-     */
-    public Animal cadastrarAnimal(Long tutorId, Animal animal) {
-        Tutor tutor = tutorRepository.findById(tutorId)
-                .orElseThrow(() -> new RuntimeException("Tutor não encontrado"));
-
-        animal.setTutor(tutor); // Relaciona o animal ao tutor
-        return animalRepository.save(animal);
+    public void deletarTutor(Long id) {
+        Tutor tutor = tutorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tutor não encontrado com o ID: " + id));
+        tutorRepository.delete(tutor);
     }
 }

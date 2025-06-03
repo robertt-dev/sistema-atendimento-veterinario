@@ -1,15 +1,13 @@
 package com.veterinario.projeto.model;
 
-import com.veterinario.projeto.model.Enum.Patente;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representa o tutor de um ou mais animais.
- * Pode ser militar (com patente) ou civil (sem patente).
+ * Representa um tutor responsável por um ou mais animais.
  */
 @Entity
 @Getter
@@ -17,33 +15,31 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(exclude = "animais") // evita loop infinito com Animal
+@ToString(exclude = "animais") // evita recursão infinita ao imprimir
 public class Tutor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include // apenas ID será usado em comparação
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(nullable = false)
     private String nome;
 
-    @Column(length = 11, unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String cpf;
 
-    @Column(length = 15, nullable = false)
     private String telefone;
 
-    @Column(length = 255, unique = true, nullable = false)
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "post_grad", nullable = true)
-    private Patente postGrad;
+    private String postGrad;
 
     /**
-     * Lista de animais relacionados a este tutor.
+     * Lista dos animais associados a este tutor.
+     * Configurado para remover animais em cascata quando o tutor é deletado.
      */
     @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Animal> animais = new ArrayList<>();
+    @JsonManagedReference
+    private List<Animal> animais;
 }

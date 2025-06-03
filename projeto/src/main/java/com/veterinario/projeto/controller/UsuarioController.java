@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,7 +20,7 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     /**
-     * Endpoint para cadastrar um usuário.
+     * Cadastrar um novo usuário.
      */
     @PostMapping
     public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody Usuario usuario) {
@@ -32,23 +33,48 @@ public class UsuarioController {
     }
 
     /**
+     * Listar todos os usuários.
+     */
+    @GetMapping
+    public ResponseEntity<List<Usuario>> listarTodos() {
+        List<Usuario> usuarios = usuarioService.listarTodos();
+        return ResponseEntity.ok(usuarios);
+    }
+
+    /**
      * Buscar usuário por ID.
      */
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Long id) {
-    Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
-    return usuario.map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+        Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
+        return usuario.map(ResponseEntity::ok)
+                      .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Atualizar um usuário existente.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioAtualizado) {
+        try {
+            Usuario atualizado = usuarioService.atualizarUsuario(id, usuarioAtualizado);
+            return ResponseEntity.ok(atualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
     /**
-     * Buscar usuário por email.
+     * Deletar um usuário pelo ID.
      */
-    @GetMapping("/email/{email}")
-    public ResponseEntity<Usuario> buscarUsuarioPorEmail(@PathVariable String email) {
-        Optional<Usuario> usuario = usuarioService.buscarUsuarioPorEmail(email);
-        return usuario.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
+        Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
+        if (usuario.isPresent()) {
+            usuarioService.excluirUsuario(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
