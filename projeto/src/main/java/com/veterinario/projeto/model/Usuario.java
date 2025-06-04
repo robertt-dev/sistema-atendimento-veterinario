@@ -33,4 +33,25 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     @Column(nullable = true)
     private Patente patente; // Pode ser null (usuário civil)
+
+    @Column(nullable = true, length = 100)
+    private String nomeDeGuerra; // Nome de guerra do militar, pode ser null para civis
+
+    /**
+     * Retorna a identificação militar formatada, ex: "CAP Morata".
+     * Se patente ou nomeDeGuerra for null, retorna apenas o que estiver disponível.
+     */
+    public String getIdentificacaoMilitar() {
+        StringBuilder sb = new StringBuilder();
+        if (patente != null) {
+            sb.append(patente.getLabel());
+        }
+        if (nomeDeGuerra != null && !nomeDeGuerra.isBlank()) {
+            if (sb.length() > 0) {
+                sb.append(" ");
+            }
+            sb.append(nomeDeGuerra);
+        }
+        return sb.toString();
+    }
 }

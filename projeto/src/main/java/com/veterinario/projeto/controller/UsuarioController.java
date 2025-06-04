@@ -52,6 +52,28 @@ public class UsuarioController {
     }
 
     /**
+     * Retorna a identificação formatada do usuário: "Patente NomeDeGuerra"
+     * Exemplo: "CAP Morata"
+     */
+    @GetMapping("/{id}/identificacao")
+    public ResponseEntity<String> obterIdentificacaoFormatada(@PathVariable Long id) {
+        Optional<Usuario> usuarioOpt = usuarioService.buscarUsuarioPorId(id);
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Usuario usuario = usuarioOpt.get();
+
+        // Verifica se a patente e o nomeDeGuerra existem
+        if (usuario.getPatente() == null || usuario.getNomeDeGuerra() == null || usuario.getNomeDeGuerra().isBlank()) {
+            return ResponseEntity.badRequest().body("Patente ou nome de guerra não informados.");
+        }
+
+        String identificacao = usuario.getPatente().name() + " " + usuario.getNomeDeGuerra();
+        return ResponseEntity.ok(identificacao);
+    }
+
+    /**
      * Atualizar um usuário existente.
      */
     @PutMapping("/{id}")
@@ -76,5 +98,22 @@ public class UsuarioController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    /**
+     * Buscar usuários pelo nome parcial.
+     * Exemplo: /usuarios/buscar?nome=morata
+     * Retorna todos os usuários que contêm "morata" no nome, ignorando maiúsculas/minúsculas.
+     * 
+     * @param nome - parte do nome para busca
+     * @return lista de usuários que atendem ao filtro
+     */
+    @GetMapping("/buscar")
+    public ResponseEntity<List<Usuario>> buscarPorNome(@RequestParam String nome) {
+        List<Usuario> usuarios = usuarioService.buscarPorNomeContendo(nome);
+        if (usuarios.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204 No Content se nenhum usuário encontrado
+        }
+        return ResponseEntity.ok(usuarios); // 200 OK com a lista dos usuários encontrados
     }
 }
