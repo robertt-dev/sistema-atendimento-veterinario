@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-VeterinarioSoftwareApplication<projeto>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.veterinario.projeto.VeterinarioSoftwareApplication",
+            "projectName": "projeto",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
