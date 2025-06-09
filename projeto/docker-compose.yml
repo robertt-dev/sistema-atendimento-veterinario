@@ -1,0 +1,18 @@
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_veterinario
+    restart: always
+    environment:
+      POSTGRES_DB: projeto_veterinario
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    name: volume_postgres_veterinario
